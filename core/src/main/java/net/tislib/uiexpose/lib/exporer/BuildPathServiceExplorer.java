@@ -9,15 +9,17 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 
-public class ServiceExplorer {
+public class BuildPathServiceExplorer implements ServiceExplorer {
     private final String buildPath;
+    private Set<Class<?>> exposedServices;
 
-    public ServiceExplorer(String buildPath) {
+    public BuildPathServiceExplorer(String buildPath) {
         this.buildPath = buildPath;
     }
 
+    @Override
     @SneakyThrows
-    public Set<Class<?>> findExposedServices() {
+    public void loadExposedServices() {
         URLClassLoader classLoader = new URLClassLoader(new URL[]{
                 new URL("file://" + buildPath)
         });
@@ -29,7 +31,11 @@ public class ServiceExplorer {
                 new TypeAnnotationsScanner()
         );
 
-        Set<Class<?>> exposedTypes = reflections.getTypesAnnotatedWith(UIExpose.class);
-        return exposedTypes;
+        this.exposedServices = reflections.getTypesAnnotatedWith(UIExpose.class);
+    }
+
+    @Override
+    public Set<Class<?>> getExposedServices() {
+        return null;
     }
 }
