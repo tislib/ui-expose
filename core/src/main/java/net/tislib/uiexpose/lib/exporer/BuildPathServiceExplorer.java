@@ -14,6 +14,9 @@ public class BuildPathServiceExplorer implements ServiceExplorer {
     private Set<Class<?>> exposedServices;
 
     public BuildPathServiceExplorer(String buildPath) {
+        if (!buildPath.endsWith("/")) {
+            buildPath = buildPath + "/";
+        }
         this.buildPath = buildPath;
     }
 
@@ -21,7 +24,7 @@ public class BuildPathServiceExplorer implements ServiceExplorer {
     @SneakyThrows
     public void loadExposedServices() {
         URLClassLoader classLoader = new URLClassLoader(new URL[]{
-                new URL("file://" + buildPath)
+                new URL("file:" + buildPath)
         });
 
         Reflections reflections = new Reflections(
@@ -36,6 +39,6 @@ public class BuildPathServiceExplorer implements ServiceExplorer {
 
     @Override
     public Set<Class<?>> getExposedServices() {
-        return null;
+        return exposedServices;
     }
 }

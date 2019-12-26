@@ -50,7 +50,8 @@ public class ServiceMethodLocator {
     private String getServiceMethodKey(MethodEntry item) {
         return item.getServiceInfo().getName()
                 + "-" + item.getMethodInfo().getName()
-                + "-" + item.getMethodInfo().getArgumentTypes()
+                + "-" + item.getMethodInfo().getArguments()
+                .values()
                 .stream()
                 .map(Type::toString)
                 .collect(Collectors.joining(","));

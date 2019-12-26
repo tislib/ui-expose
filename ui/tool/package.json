@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "build:watch": "tsc --watch"
   },
   "files": [
     "lib/**/*"
@@ -23,6 +24,11 @@
   },
   "homepage": "https://github.com/tislib/ui-expose#readme",
   "devDependencies": {
+    "@types/node": "^13.1.0",
     "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "rxjs": "^6.5.3",
+    "ts-morph": "^6.0.2"
   }
 }

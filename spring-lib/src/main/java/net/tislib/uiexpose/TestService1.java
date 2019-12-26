@@ -11,8 +11,12 @@ public class TestService1 {
         return param1 + param2;
     }
 
-    public String test2(String param1, String param2) {
-        return param1 + "2" + param2;
+    public String test1(String param1, String param2, String param3) {
+        return param1 + param2;
+    }
+
+    public String test2(String param1, String param2, String param3) {
+        return param1 + param2 + param3;
     }
 
 }

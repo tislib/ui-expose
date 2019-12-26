@@ -1,6 +1,7 @@
 package net.tislib.uiexpose.lib.processor;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -39,11 +40,15 @@ public class ServiceProcessorImpl implements ServiceProcessor {
         methodInfo.setName(method.getName());
         methodInfo.setMethod(method);
         methodInfo.setReturnType(resolveType(method.getReturnType()));
-        methodInfo.setArgumentTypes(Arrays.stream(method.getParameterTypes()).map(this::resolveType).collect(Collectors.toList()));
+        methodInfo.setArguments(Arrays.stream(method.getParameters())
+                .collect(Collectors.toMap(
+                        Parameter::getName,
+                        item -> this.resolveType(item.getType())
+                )));
         return methodInfo;
     }
 
-    private Type resolveType(Class<?> returnType) {
+    private Type<?> resolveType(Class<?> returnType) {
         switch (returnType.getSimpleName()) {
             case "String":
                 return Type.STRING_TYPE;
