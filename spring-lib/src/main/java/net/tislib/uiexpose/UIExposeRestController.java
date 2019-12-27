@@ -5,8 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import net.tislib.uiexpose.lib.data.Value;
 import net.tislib.uiexpose.lib.serializer.JacksonSerializeModule;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +25,7 @@ public class UIExposeRestController {
         objectMapper.registerModule(new JacksonSerializeModule());
     }
 
+    @CrossOrigin
     @RequestMapping("/{serviceName}/{methodName}")
     @SneakyThrows
     public void execute(@RequestBody String body,

@@ -1,5 +1,11 @@
 import { AsyncSubject, Observable } from 'rxjs';
-import { OptionalKind, ParameterDeclarationStructure, Project, StructureKind } from 'ts-morph';
+import {
+    MethodDeclarationStructure,
+    OptionalKind,
+    ParameterDeclarationStructure,
+    Project,
+    StructureKind
+} from 'ts-morph';
 import { MethodInfo } from './data/method-info';
 import { ServiceInfo } from './data/service-info';
 
@@ -23,7 +29,7 @@ export class Generator {
     
     runTsGenerator(data: ServiceInfo[], generatedPath: string) {
         const project = new Project({});
-
+        
         project.addSourceFilesAtPaths(generatedPath + '*.ts');
         data.forEach(item => {
             this.storeServiceClass(generatedPath, project, item);
@@ -33,14 +39,38 @@ export class Generator {
             .then(() => console.log('Saved!'));
     }
     
-    storeServiceClass(generatedPath: string, project: Project, item: ServiceInfo) {
-        project.createSourceFile(generatedPath + '/' + item.name + '.ts', {
-            statements: [{
-                kind: StructureKind.Interface,
-                name: item.name,
-                isExported: true,
-                methods: item.methods.map(method => this.makeMethodDecleration(method))
-            }]
+    storeServiceClass(generatedPath: string, project: Project, serviceInfo: ServiceInfo) {
+        project.createSourceFile(generatedPath + '/service/' + Generator.prepareServiceClassFileName(serviceInfo.name) + '.ts', {
+            statements: [
+                `import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { UiExposeBackend } from '../../lib/ui-expose-backend.service';
+
+@Injectable()`,
+                {
+                    kind: StructureKind.Class,
+                    name: serviceInfo.name,
+                    isExported: true,
+                    properties: [
+                        {
+                            name: 'SERVICE_NAME',
+                            isStatic: true,
+                            isReadonly: true,
+                            initializer: '\'' + serviceInfo.name + '\''
+                        }
+                    ],
+                    ctors: [
+                        {
+                            parameters: [
+                                {
+                                    name: 'backend',
+                                    type: 'UiExposeBackend'
+                                }
+                            ],
+                        }
+                    ],
+                    methods: serviceInfo.methods.map(method => this.makeMethodDeclaration(serviceInfo.name, method))
+                }]
         }, {
             overwrite: true
         }).formatText({
@@ -58,22 +88,40 @@ export class Generator {
         
     }
     
-    private makeMethodDecleration(method: MethodInfo) {
-        console.log(method);
-        
+    private makeMethodDeclaration(serviceInfo: string, method: MethodInfo): OptionalKind<MethodDeclarationStructure> {
         const parameters: OptionalKind<ParameterDeclarationStructure>[] = [];
+        const argumentsDef = [];
         
         for (let key in method.arguments) {
             parameters.push({
                 name: key,
-                type: 'string'
+                type: method.arguments[key]
+            });
+            argumentsDef.push({
+                value: key,
+                type: method.arguments[key]
             });
         }
         
+        const argumentsText = JSON.stringify(argumentsDef);
+        
         return {
             name: method.name,
-            returnType: 'string',
-            parameters: parameters
+            returnType: 'Observable<string>',
+            parameters: parameters,
+            statements: writer => {
+                writer.write(`this.backend.invoke({
+      serviceName: ${serviceInfo}.SERVICE_NAME,
+      methodName: '${method.name}',
+      arguments: ${argumentsText},
+      returnType: '${method.returnType}'
+    });`)
+            }
         }
+    }
+    
+    private static prepareServiceClassFileName(name: string): string {
+        const nameFormatter = (str: string) => str.replace(/\B[A-Z]/g, letter => `-${letter.toLowerCase()}`) + '.service';
+        return nameFormatter(name).toLowerCase();
     }
 }

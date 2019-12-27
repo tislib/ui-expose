@@ -1,5 +1,5 @@
 {
-  "name": "@tislib/ui-expose-tool",
+  "name": "@tislib/ui-expose-core",
   "version": "0.0.6",
   "description": "",
   "main": "index.js",
@@ -23,10 +23,5 @@
   "devDependencies": {
     "@types/node": "^13.1.0",
     "typescript": "^3.7.4"
-  },
-  "dependencies": {
-    "@tislib/ui-expose-core": "file:../core",
-    "rxjs": "^6.5.3",
-    "ts-morph": "^6.0.2"
   }
 }
