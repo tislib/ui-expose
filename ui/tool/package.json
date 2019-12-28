@@ -1,0 +1,40 @@
+{
+  "name": "@tislib/ui-expose-tool",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "ui-expose-tool": "./lib/index.js",
+    "uxt": "./lib/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "tool": "ui-expose-tool"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tislib/ui-expose.git"
+  },
+  "author": "Taleh Ibrahimli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tislib/ui-expose/issues"
+  },
+  "homepage": "https://github.com/tislib/ui-expose#readme",
+  "devDependencies": {
+    "@types/node": "^13.1.0",
+    "@types/yargs": "^13.0.4",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "@tislib/ui-expose-core": "latest",
+    "mvn-artifact-download": "^4.1.0",
+    "rxjs": "^6.5.3",
+    "ts-morph": "^6.0.2",
+    "yargs": "^15.0.2"
+  }
+}
