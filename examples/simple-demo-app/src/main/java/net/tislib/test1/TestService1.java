@@ -1,4 +1,4 @@
-package net.tislib.uiexpose;
+package net.tislib.test1;
 
 import net.tislib.uiexpose.lib.annotations.UIExpose;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,10 @@ public class TestService1 {
     }
 
     public String test3(String param1, String param2, String param3) {
+        return param1 + param2 + param3;
+    }
+
+    public String test4(String param1, String param2, String param3) {
         return param1 + param2 + param3;
     }
 

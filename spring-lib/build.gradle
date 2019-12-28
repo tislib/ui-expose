@@ -1,22 +1,16 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.2.2.RELEASE")
-    }
-}
-
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-
-sourceCompatibility = 1.8
+apply from: '../gradle/publishing.gradle'
 
 repositories {
     mavenCentral()
+}
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-parameters"
+    }
 }
 
 dependencies {
@@ -25,6 +19,9 @@ dependencies {
 
     compile project(':core')
 
-    compile("org.springframework.boot:spring-boot-starter-web")
+    compileOnly 'javax.servlet:servlet-api:2.5'
+    compileOnly("org.springframework:spring-web:5.1.9.RELEASE")
+    compileOnly("org.springframework:spring-context:5.1.9.RELEASE")
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

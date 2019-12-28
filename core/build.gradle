@@ -2,10 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'net.tislib.uiexpose'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
+apply from: '../gradle/publishing.gradle'
 
 repositories {
     mavenCentral()

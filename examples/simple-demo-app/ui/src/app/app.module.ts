@@ -1,6 +1,7 @@
-import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { UiExposeModule } from '@tislib/ui-expose-angular-lib';
+import { environment } from '../environments/environment';
 import { TestService1 } from '../generated/service/test-service1.service';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -13,11 +14,9 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    UiExposeModule.forRoot(environment.uiExposeConf)
   ],
-  providers: [
-    TestService1
-  ],
+  providers: [TestService1],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

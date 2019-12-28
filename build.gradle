@@ -2,8 +2,12 @@ plugins {
     id 'java'
 }
 
-group 'net.tislib.uiexpose'
-version '1.0-SNAPSHOT'
+subprojects {
+    group 'net.tislib.ui-expose'
+    version '0.0.1'
+
+    sourceCompatibility = 1.8
+}
 
 sourceCompatibility = 1.8
 

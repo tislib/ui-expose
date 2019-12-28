@@ -3,13 +3,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiInvokeDescription } from './api-invoke-description';
+import { UiExposeConfig } from './ui-expose-config';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UiExposeBackend {
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private config: UiExposeConfig) {
   }
 
   public invoke<T>(description: ApiInvokeDescription<T>): Observable<T> {
@@ -28,10 +27,17 @@ export class UiExposeBackend {
   }
 
   private generateUrl<T>(description: ApiInvokeDescription<T>) {
-    return `http://localhost:8080/api/${description.serviceName}/${description.methodName}`;
+    return `${this.getHostUrl()}${description.serviceName}/${description.methodName}`;
   }
 
   private transformResult<T>(result: Observable<Object>, description: ApiInvokeDescription<T>) {
     return result.pipe(map(item => item as T));
+  }
+
+  private getHostUrl() {
+    if (!this.config.hostUrl.endsWith('/')) {
+      this.config.hostUrl = this.config.hostUrl + '/';
+    }
+    return this.config.hostUrl;
   }
 }

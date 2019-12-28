@@ -10,8 +10,9 @@ npm publish --access public
 cd ../angular-lib || exit
 npm install
 npm run build
-cd dist/lib || exit
+cd projects/lib || exit
 npm version patch
+cd ../../dist/lib || exit
 npm publish --access public
 cd ../..
 

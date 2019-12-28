@@ -1,7 +1,3 @@
 rootProject.name = 'UI-Expose'
-include 'test'
-include 'lib'
 include 'spring-lib'
 include 'core'
-include 'service-locator'
-

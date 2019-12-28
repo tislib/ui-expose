@@ -6,26 +6,12 @@ import {
     Project,
     StructureKind
 } from 'ts-morph';
+import { CoreLibHelper } from './core-lib-helper';
 import { MethodInfo } from './data/method-info';
 import { ServiceInfo } from './data/service-info';
 
-const { exec } = require('child_process');
-
 export class Generator {
-    
-    runUiExposeScanner(buildPath: string): Observable<ServiceInfo[]> {
-        const subject = new AsyncSubject<ServiceInfo[]>();
-        exec('java -jar /Volumes/TisDirectory/TisFiles/Tislib/UI-Expose/core/build/libs/core-1.0-SNAPSHOT.jar ' + buildPath, (err: object, stdout: string) => {
-            if (err) {
-                subject.error(err);
-            }
-            
-            subject.next(JSON.parse(stdout));
-            subject.complete();
-        });
-        
-        return subject;
-    }
+    private coreLibHelper: CoreLibHelper = new CoreLibHelper();
     
     runTsGenerator(data: ServiceInfo[], generatedPath: string) {
         const project = new Project({});
@@ -36,7 +22,7 @@ export class Generator {
         });
         
         project.save()
-            .then(() => console.log('Saved!'));
+            .then(() => console.log('Updated'));
     }
     
     storeServiceClass(generatedPath: string, project: Project, serviceInfo: ServiceInfo) {
@@ -44,7 +30,7 @@ export class Generator {
             statements: [
                 `import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UiExposeBackend } from '../../lib/ui-expose-backend.service';
+import { UiExposeBackend } from '@tislib/ui-expose-angular-lib';
 
 @Injectable()`,
                 {
@@ -57,6 +43,10 @@ import { UiExposeBackend } from '../../lib/ui-expose-backend.service';
                             isStatic: true,
                             isReadonly: true,
                             initializer: '\'' + serviceInfo.name + '\''
+                        },
+                        {
+                            name: 'backend',
+                            type: 'UiExposeBackend'
                         }
                     ],
                     ctors: [
@@ -67,6 +57,9 @@ import { UiExposeBackend } from '../../lib/ui-expose-backend.service';
                                     type: 'UiExposeBackend'
                                 }
                             ],
+                            statements: [
+                                'this.backend = backend;'
+                            ]
                         }
                     ],
                     methods: serviceInfo.methods.map(method => this.makeMethodDeclaration(serviceInfo.name, method))
@@ -79,43 +72,40 @@ import { UiExposeBackend } from '../../lib/ui-expose-backend.service';
     }
     
     run(buildPath: string, generatedPath: string) {
-        const serviceInfo$ = this.runUiExposeScanner(buildPath);
+        const serviceInfo$ = this.coreLibHelper.runScanner(buildPath);
         
         serviceInfo$.subscribe(res => {
             this.runTsGenerator(res, generatedPath);
-            console.log('Done')
         });
         
     }
     
     private makeMethodDeclaration(serviceInfo: string, method: MethodInfo): OptionalKind<MethodDeclarationStructure> {
         const parameters: OptionalKind<ParameterDeclarationStructure>[] = [];
-        const argumentsDef = [];
         
+        let argumentsText = '';
         for (let key in method.arguments) {
             parameters.push({
                 name: key,
                 type: method.arguments[key]
             });
-            argumentsDef.push({
-                value: key,
-                type: method.arguments[key]
-            });
+            if (argumentsText) {
+                argumentsText += ',';
+            }
+            argumentsText = `${argumentsText}{value: ${key}, type: '${method.arguments[key]}'}`;
         }
-        
-        const argumentsText = JSON.stringify(argumentsDef);
         
         return {
             name: method.name,
             returnType: 'Observable<string>',
             parameters: parameters,
             statements: writer => {
-                writer.write(`this.backend.invoke({
-      serviceName: ${serviceInfo}.SERVICE_NAME,
-      methodName: '${method.name}',
-      arguments: ${argumentsText},
-      returnType: '${method.returnType}'
-    });`)
+                writer.write(`return this.backend.invoke({
+                  serviceName: ${serviceInfo}.SERVICE_NAME,
+                  methodName: '${method.name}',
+                  arguments: [${argumentsText}],
+                  returnType: '${method.returnType}'
+                });`);
             }
         }
     }

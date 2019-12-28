@@ -1,11 +1,12 @@
+#!/usr/bin/env node
+
 import * as fs from 'fs';
 import { interval, Subject } from 'rxjs';
 import { debounce } from 'rxjs/operators';
+import { ConfigLoader } from './config-loader';
 import { Generator } from './generator';
 
-const buildPath = '/Volumes/TisDirectory/TisFiles/Tislib/UI-Expose/spring-lib/out/production/classes';
-const generatedPath = '/Volumes/TisDirectory/TisFiles/Tislib/UI-Expose/ui/angular-test/src/generated';
-
+const configLoader = new ConfigLoader();
 
 interface FsWatchEvent {
     event: string;
@@ -15,19 +16,21 @@ interface FsWatchEvent {
 const fsEventSubject = new Subject<FsWatchEvent>();
 const generator = new Generator();
 
-// fs.watch(buildPath, {
-//     recursive: true,
-// }, (event: string, filename: string) => {
-//     fsEventSubject.next({
-//         event: event,
-//         filename: filename
-//     });
-// });
-//
-// fsEventSubject
-//     .pipe(debounce(() => interval(1000)))
-//     .subscribe(event => {
-//         generator.run(buildPath, generatedPath);
-//     });
+fs.watch(configLoader.getBuildPath(), {
+    recursive: true,
+}, (event: string, filename: string) => {
+    fsEventSubject.next({
+        event: event,
+        filename: filename
+    });
+});
 
-generator.run(buildPath, generatedPath);
+fsEventSubject
+    .pipe(debounce(() => interval(1000)))
+    .subscribe(event => {
+        generator.run(configLoader.getBuildPath(), configLoader.getGeneratedPath());
+    });
+
+generator.run(configLoader.getBuildPath(), configLoader.getGeneratedPath())
+
+
