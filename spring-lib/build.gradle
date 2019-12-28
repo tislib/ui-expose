@@ -1,16 +1,27 @@
-plugins {
-    id 'java'
-}
-
-group 'org.example'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply from: '../gradle/publishing.gradle'
 
 repositories {
     mavenCentral()
 }
 
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-parameters"
+    }
+}
+
 dependencies {
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+
+    compile project(':core')
+
+    compileOnly 'javax.servlet:servlet-api:2.5'
+    compileOnly("org.springframework:spring-web:5.1.9.RELEASE")
+    compileOnly("org.springframework:spring-context:5.1.9.RELEASE")
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

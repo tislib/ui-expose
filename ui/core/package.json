@@ -1,0 +1,27 @@
+{
+  "name": "@tislib/ui-expose-core",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tislib/ui-expose.git"
+  },
+  "author": "Taleh Ibrahimli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tislib/ui-expose/issues"
+  },
+  "homepage": "https://github.com/tislib/ui-expose#readme",
+  "devDependencies": {
+    "@types/node": "^13.1.0",
+    "typescript": "^3.7.4"
+  }
+}
