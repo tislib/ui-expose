@@ -12,7 +12,6 @@ public class LocalServiceExplorer implements ServiceExplorer {
     @Override
     public void loadExposedServices() {
         Reflections reflections = new Reflections(
-                "net.tislib",
                 new SubTypesScanner(false),
                 new TypeAnnotationsScanner()
         );

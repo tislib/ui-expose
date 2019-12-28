@@ -1,7 +1,5 @@
-import { Type } from './type';
-
 export interface MethodInfo {
     name: string;
-    returnType: Type;
+    returnType: string;
     arguments: { [key: string]: string };
 }
