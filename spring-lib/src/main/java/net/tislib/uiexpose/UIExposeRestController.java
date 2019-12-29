@@ -1,10 +1,14 @@
 package net.tislib.uiexpose;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.PrintStream;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import net.tislib.uiexpose.lib.data.ServiceInfo;
+import net.tislib.uiexpose.lib.publisher.OutputPublisher;
 import net.tislib.uiexpose.lib.serializer.JacksonSerializeModule;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +40,15 @@ public class UIExposeRestController {
         Object res = service.execute(serviceName, methodName, objectMapper.readValue(body, RequestParamsWrapper.class), request, response);
 
         objectMapper.writeValue(response.getOutputStream(), res);
+    }
+
+    @CrossOrigin
+    @RequestMapping("/api-descriptions")
+    @SneakyThrows
+    public void getApiDescriptions(HttpServletResponse response) {
+        Set<ServiceInfo> res = service.getApiDescriptions();
+        OutputPublisher outputPublisher = new OutputPublisher();
+        outputPublisher.publish(res, new PrintStream(response.getOutputStream()));
     }
 
 }

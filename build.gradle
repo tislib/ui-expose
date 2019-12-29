@@ -3,6 +3,8 @@ plugins {
 }
 
 subprojects {
+    apply plugin: "maven"
+
     group 'net.tislib.ui-expose'
     version '0.1.0'
 
