@@ -1,0 +1,18 @@
+language: generic
+
+jobs:
+  include:
+    - stage: build
+      install: true
+      language: java
+      dist: trusty
+      jdk:
+        - oraclejdk8
+      script: ./gradlew build
+    - stage: build examples demo app
+      install: true
+      dist: trusty
+      jdk:
+        - oraclejdk8
+      language: java
+      script: ./gradlew install; cd examples/simple-demo-app; ../../gradlew check
