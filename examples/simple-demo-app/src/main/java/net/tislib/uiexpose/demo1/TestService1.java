@@ -11,16 +11,4 @@ public class TestService1 {
         return param1 + param2;
     }
 
-    public String test2(String param1, String param2, String param3) {
-        return param1 + param2 + param3;
-    }
-//
-//    public String test3(String param1, String param2, String param3) {
-//        return param1 + param2 + param3;
-//    }
-//
-//    public String test4(String param1, String param2, String param3) {
-//        return param1 + param2 + param3;
-//    }
-
 }
