@@ -1,4 +1,4 @@
-package net.tislib.test1;
+package net.tislib.uiexpose.demo1;
 
 import net.tislib.uiexpose.UIExposeConfiguration;
 import org.springframework.boot.SpringApplication;

@@ -2,7 +2,6 @@ package net.tislib.uiexpose;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,11 +9,11 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import net.tislib.uiexpose.lib.annotations.UIExpose;
 import net.tislib.uiexpose.lib.data.ServiceInfo;
 import net.tislib.uiexpose.lib.data.Value;
 import net.tislib.uiexpose.lib.exporer.LocalServiceExplorer;
 import net.tislib.uiexpose.lib.exporer.ServiceMethodLocator;
-import net.tislib.uiexpose.lib.processor.ServiceProcessor;
 import net.tislib.uiexpose.lib.processor.ServiceProcessorImpl;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,13 @@ public class UIExposeRestService {
 
     @PostConstruct
     public void init() {
-        this.serviceExplorer = new LocalServiceExplorer();
+        this.serviceExplorer = new LocalServiceExplorer(
+                applicationContext.getBeansWithAnnotation(UIExpose.class)
+                        .values()
+                        .stream()
+                        .map(item -> item.getClass().getPackage().getName())
+                        .collect(Collectors.toSet())
+        );
         serviceExplorer.loadExposedServices();
         this.serviceMethodLocator = new ServiceMethodLocator(serviceExplorer.getExposedServices());
         this.serviceMethodLocator.loadMethodInfo();

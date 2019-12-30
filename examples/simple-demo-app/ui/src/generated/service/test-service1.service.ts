@@ -29,22 +29,4 @@ export class TestService1 {
             returnType: 'string'
         });
     }
-
-    test4(param3: string, param1: string, param2: string): Observable<string> {
-        return this.backend.invoke({
-            serviceName: TestService1.SERVICE_NAME,
-            methodName: 'test4',
-            arguments: [{ value: param3, type: 'string' }, { value: param1, type: 'string' }, { value: param2, type: 'string' }],
-            returnType: 'string'
-        });
-    }
-
-    test3(param3: string, param1: string, param2: string): Observable<string> {
-        return this.backend.invoke({
-            serviceName: TestService1.SERVICE_NAME,
-            methodName: 'test3',
-            arguments: [{ value: param3, type: 'string' }, { value: param1, type: 'string' }, { value: param2, type: 'string' }],
-            returnType: 'string'
-        });
-    }
 }
