@@ -32,6 +32,9 @@ gradle.projectsEvaluated {
 }
 
 dependencies {
+//    compile 'cz.habarta.typescript-generator:typescript-generator-core:2.16.538'
+
+    compile 'io.github.classgraph:classgraph:4.8.24'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
 
