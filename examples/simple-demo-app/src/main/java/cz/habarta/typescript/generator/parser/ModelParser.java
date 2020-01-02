@@ -3,7 +3,7 @@ package cz.habarta.typescript.generator.parser;
 
 import cz.habarta.typescript.generator.OptionalProperties;
 import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.UIExposePrimitiveType;
+import cz.habarta.typescript.generator.TsType;
 import cz.habarta.typescript.generator.TypeProcessor;
 //import cz.habarta.typescript.generator.TypeScriptGenerator;
 import cz.habarta.typescript.generator.compiler.EnumKind;
@@ -92,7 +92,7 @@ public abstract class ModelParser {
 
             final TypeProcessor.Result result = commonTypeProcessor.processTypeInTemporaryContext(sourceType.type, null, settings);
             if (result != null) {
-                if (sourceType.type instanceof Class<?> && result.isReferenceType()) {
+                if (sourceType.type instanceof Class<?> && result.getTsType() instanceof TsType.ReferenceType) {
                     final Class<?> cls = (Class<?>) sourceType.type;
 //                    TypeScriptGenerator2.getLogger().verbose("Parsing '" + cls.getName() + "'" +
 //                            (sourceType.usedInClass != null ? " used in '" + sourceType.usedInClass.getSimpleName() + "." + sourceType.usedInMember + "'" : ""));

@@ -1,11 +1,11 @@
 package net.tislib.uiexpose.lib.processor;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.tislib.uiexpose.lib.data.ServiceInfo;
+import net.tislib.uiexpose.lib.data.Model;
+import net.tislib.uiexpose.lib.data.ServiceModel;
 
 public interface ServiceProcessor {
-    Set<ServiceInfo> process(Set<Class<?>> exposedServices);
-    Map<Class<?>, ServiceInfo> processMapped(Set<Class<?>> exposedServices);
+    Model process(Set<Class<?>> exposedServices);
+    Map<Class<?>, ServiceProcessorImpl.ServiceInfo> processMapped(Set<Class<?>> exposedServices);
 }

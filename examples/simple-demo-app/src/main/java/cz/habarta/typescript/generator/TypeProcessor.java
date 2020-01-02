@@ -26,6 +26,11 @@ public interface TypeProcessor {
         return result != null ? result.getDiscoveredClasses() : Collections.emptyList();
     }
 
+    public default boolean isTypeExcluded(Type type, Object typeContext, Settings settings) {
+        final TypeProcessor.Result result = processTypeInTemporaryContext(type, typeContext, settings);
+        return result != null && result.tsType == TsType.Any;
+    }
+
     public static class Context {
 
         private final SymbolTable symbolTable;
@@ -58,30 +63,27 @@ public interface TypeProcessor {
 
     public static class Result {
 
-//        private final UIExposePrimitiveType tsType;
-        private boolean isReferenceType;
+        private final TsType tsType;
         private final List<Class<?>> discoveredClasses;
 
-
-        public Result(List<Class<?>> discoveredClasses) {
+        public Result(TsType tsType, List<Class<?>> discoveredClasses) {
+            this.tsType = tsType;
             this.discoveredClasses = discoveredClasses;
         }
 
-        public Result(Class<?>... discoveredClasses) {
+        public Result(TsType tsType, Class<?>... discoveredClasses) {
+            this.tsType = tsType;
             this.discoveredClasses = Arrays.asList(discoveredClasses);
+        }
+
+        public TsType getTsType() {
+            return tsType;
         }
 
         public List<Class<?>> getDiscoveredClasses() {
             return discoveredClasses;
         }
 
-        public boolean isReferenceType() {
-            return isReferenceType;
-        }
-
-        public void setReferenceType(boolean referenceType) {
-            isReferenceType = referenceType;
-        }
     }
 
     public static class Chain implements TypeProcessor {

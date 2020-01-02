@@ -32,7 +32,7 @@ public class ExcludingTypeProcessor implements TypeProcessor {
     public Result processType(Type javaType, Context context) {
         final Class<?> rawClass = Utils.getRawClassOrNull(javaType);
         if (rawClass != null && excludeFilter.test(rawClass.getName())) {
-            return new Result();
+            return new Result(TsType.Any);
         }
         return null;
     }

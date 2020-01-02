@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import net.tislib.uiexpose.lib.annotations.UIExpose;
-import net.tislib.uiexpose.lib.data.ServiceInfo;
+import net.tislib.uiexpose.lib.data.ServiceModel;
 import net.tislib.uiexpose.lib.data.Value;
 import net.tislib.uiexpose.lib.exporer.LocalServiceExplorer;
 import net.tislib.uiexpose.lib.exporer.ServiceMethodLocator;
@@ -26,7 +26,7 @@ public class UIExposeRestService {
     private ServiceMethodLocator serviceMethodLocator;
     private final ApplicationContext applicationContext;
     private Map<Class<?>, ?> serviceClassBeanMap;
-    private Set<ServiceInfo> serviceInfoList;
+    private Set<ServiceModel> serviceInfoList;
 
     @PostConstruct
     public void init() {
@@ -58,7 +58,7 @@ public class UIExposeRestService {
         return serviceMethodLocator.invokeWithValues(serviceBean, method, requestParamsWrapper.getValues());
     }
 
-    public Set<ServiceInfo> getApiDescriptions() {
+    public Set<ServiceModel> getApiDescriptions() {
         return serviceInfoList;
     }
 }

@@ -39,6 +39,7 @@ dependencies {
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
 
     compile group: 'net.tislib.ui-expose', name: 'spring-lib', version: '0.1.0'
+    compile project (':ui-expose-core')
 
     compile("org.springframework.boot:spring-boot-starter-web")
 

@@ -27,7 +27,7 @@ fs.watch(configLoader.getBuildPath(), {
 
 fsEventSubject
     .pipe(debounce(() => interval(1000)))
-    .subscribe(event => {
+    .subscribe(() => {
         generator.run(configLoader.getBuildPath(), configLoader.getGeneratedPath());
     });
 

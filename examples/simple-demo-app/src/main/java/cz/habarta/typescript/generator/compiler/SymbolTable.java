@@ -118,7 +118,7 @@ public class SymbolTable {
     private void setSymbolQualifiedName(Symbol symbol, Class<?> cls, String suffix) {
         final String module;
         final String namespacedName;
-        final Pair<String/*module*/, String/*namespacedName*/> fullNameFromDependency = null;
+        final Pair<String/*module*/, String/*namespacedName*/> fullNameFromDependency = settings.getModuleDependencies().getFullName(cls);
         if (fullNameFromDependency != null) {
             module = fullNameFromDependency.getValue1();
             namespacedName = fullNameFromDependency.getValue2();
@@ -243,7 +243,7 @@ public class SymbolTable {
     public boolean isImported(Symbol symbol) {
         final Class<?> cls = getSymbolClass(symbol);
         if (cls != null) {
-            return false;
+            return settings.getModuleDependencies().getFullName(cls) != null;
         }
         return false;
     }

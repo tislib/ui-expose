@@ -47,17 +47,4 @@ public class Jackson2ConfigurationResolved {
         return resolvedOverrides;
     }
 
-    public void setVisibility(
-            JsonAutoDetect.Visibility fieldVisibility,
-            JsonAutoDetect.Visibility getterVisibility,
-            JsonAutoDetect.Visibility isGetterVisibility,
-            JsonAutoDetect.Visibility setterVisibility,
-            JsonAutoDetect.Visibility creatorVisibility) {
-        this.fieldVisibility = fieldVisibility;
-        this.getterVisibility = getterVisibility;
-        this.isGetterVisibility = isGetterVisibility;
-        this.setterVisibility = setterVisibility;
-        this.creatorVisibility = creatorVisibility;
-    }
-
 }

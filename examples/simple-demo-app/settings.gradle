@@ -1,1 +1,3 @@
 rootProject.name = 'UI-Expose-Simple-Demo-App'
+include 'ui-expose-core'
+project(':ui-expose-core').projectDir = new File('../../core')

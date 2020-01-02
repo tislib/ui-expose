@@ -11,4 +11,9 @@ public class TestService1 {
         return param1 + param2;
     }
 
+    public Person createDummyPerson(String name) {
+        Person person = new Person();
+        person.setProduct(new PersonProduct());
+        return person;
+    }
 }

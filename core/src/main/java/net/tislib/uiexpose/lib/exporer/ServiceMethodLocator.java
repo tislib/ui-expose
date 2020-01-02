@@ -9,17 +9,19 @@ import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import net.tislib.uiexpose.lib.data.MethodInfo;
-import net.tislib.uiexpose.lib.data.ServiceInfo;
-import net.tislib.uiexpose.lib.data.Type;
+import net.tislib.uiexpose.lib.data.MethodModel;
+import net.tislib.uiexpose.lib.data.ServiceModel;
+import net.tislib.uiexpose.lib.data.UIExposeType;
 import net.tislib.uiexpose.lib.data.Value;
+import net.tislib.uiexpose.lib.processor.Jackson2Configuration;
+import net.tislib.uiexpose.lib.processor.JacksonBeanProcessor;
 import net.tislib.uiexpose.lib.processor.ServiceProcessor;
 import net.tislib.uiexpose.lib.processor.ServiceProcessorImpl;
 
 @RequiredArgsConstructor
 public class ServiceMethodLocator {
     private final Set<Class<?>> exposedServices;
-    private final ServiceProcessor serviceProcessor = new ServiceProcessorImpl();
+    private final ServiceProcessor serviceProcessor = new ServiceProcessorImpl(new JacksonBeanProcessor(new Jackson2Configuration()));
     private Map<String, MethodEntry> methodEntryMap;
     private Map<String, Class<?>> serviceEntryMap;
 
@@ -28,7 +30,7 @@ public class ServiceMethodLocator {
                 .entrySet()
                 .stream()
                 .collect(Collectors.toMap(
-                        item -> item.getValue().getName(), item -> item.getKey()
+                        item -> item.getValue().getServiceModel().getName(), item -> item.getKey()
                 ));
 
         this.methodEntryMap = this.serviceProcessor.processMapped(exposedServices)
@@ -37,8 +39,8 @@ public class ServiceMethodLocator {
                 .flatMap(item -> item.getValue().getMethods().stream().map(
                         methodInfo -> MethodEntry.builder()
                                 .serviceClass(item.getKey())
-                                .serviceInfo(item.getValue())
-                                .methodInfo(methodInfo)
+                                .serviceInfo(item.getValue().getServiceModel())
+                                .methodInfo(methodInfo.getMethodModel())
                                 .method(methodInfo.getMethod())
                                 .build()
                 ))
@@ -53,13 +55,13 @@ public class ServiceMethodLocator {
                 + "-" + item.getMethodInfo().getArguments()
                 .values()
                 .stream()
-                .map(Type::toString)
+                .map(UIExposeType::toString)
                 .collect(Collectors.joining(","));
     }
 
-    public Method locateMethod(String serviceName, String methodName, List<? extends Type<?>> types) {
+    public Method locateMethod(String serviceName, String methodName, List<? extends UIExposeType<?>> types) {
         return methodEntryMap.get(serviceName + "-" + methodName + "-" + types.stream()
-                .map(Type::toString)
+                .map(UIExposeType::toString)
                 .collect(Collectors.joining(","))).getMethod();
     }
 
@@ -76,8 +78,8 @@ public class ServiceMethodLocator {
     @Builder
     public static class MethodEntry {
         private Class<?> serviceClass;
-        private ServiceInfo serviceInfo;
-        private MethodInfo methodInfo;
+        private ServiceModel serviceInfo;
+        private MethodModel methodInfo;
         private Method method;
     }
 }

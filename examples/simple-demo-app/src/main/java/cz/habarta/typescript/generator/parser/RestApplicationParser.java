@@ -51,6 +51,12 @@ public abstract class RestApplicationParser {
         }
     }
 
+    protected void foundType(Result result, Type type, Class<?> usedInClass, String usedInMember) {
+        if (!commonTypeProcessor.isTypeExcluded(type, null, settings)) {
+            result.discoveredTypes.add(new SourceType<>(type, usedInClass, usedInMember));
+        }
+    }
+
     protected static class ResourceContext {
         public final Class<?> rootResource;
         public final String path;

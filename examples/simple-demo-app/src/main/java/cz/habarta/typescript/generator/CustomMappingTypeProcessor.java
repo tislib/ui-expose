@@ -7,7 +7,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -36,20 +35,34 @@ public class CustomMappingTypeProcessor implements TypeProcessor {
         }
 
         final List<Class<?>> discoveredClasses = new ArrayList<>();
-        final Consumer<Integer> processGenericParameter = index -> {
+        final Function<Integer, TsType> processGenericParameter = index -> {
             final Type typeArgument = typeArguments.get(index);
             final TypeProcessor.Result typeArgumentResult = context.processType(typeArgument);
             discoveredClasses.addAll(typeArgumentResult.getDiscoveredClasses());
+            return typeArgumentResult.getTsType();
         };
         if (mapping.tsType.typeParameters != null) {
+            final List<TsType> tsTypeArguments = new ArrayList<>();
             for (String typeParameter : mapping.tsType.typeParameters) {
+                final TsType tsType;
                 final int index = mapping.javaType.indexOfTypeParameter(typeParameter);
                 if (index != -1) {
-                    processGenericParameter.accept(index);
+                    tsType = processGenericParameter.apply(index);
+                } else {
+                    tsType = new TsType.VerbatimType(typeParameter);
                 }
+                tsTypeArguments.add(tsType);
+            }
+            return new Result(new TsType.GenericBasicType(mapping.tsType.rawName, tsTypeArguments), discoveredClasses);
+        } else {
+            final int index = mapping.javaType.indexOfTypeParameter(mapping.tsType.rawName);
+            if (index != -1) {
+                final TsType tsType = processGenericParameter.apply(index);
+                return new Result(tsType, discoveredClasses);
+            } else {
+                return new Result(new TsType.BasicType(mapping.tsType.rawName), discoveredClasses);
             }
         }
-        return new Result(discoveredClasses);
     }
 
 }

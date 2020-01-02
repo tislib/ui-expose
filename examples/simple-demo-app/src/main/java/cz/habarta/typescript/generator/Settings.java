@@ -2,10 +2,10 @@
 package cz.habarta.typescript.generator;
 
 import com.fasterxml.jackson.databind.Module;
-//import cz.habarta.typescript.generator.compiler.ModelCompiler;
+import cz.habarta.typescript.generator.compiler.ModelCompiler;
 import cz.habarta.typescript.generator.compiler.SymbolTable.CustomTypeNamingFunction;
-//import cz.habarta.typescript.generator.emitter.EmitterExtension;
-//import cz.habarta.typescript.generator.emitter.EmitterExtensionFeatures;
+import cz.habarta.typescript.generator.emitter.EmitterExtension;
+import cz.habarta.typescript.generator.emitter.EmitterExtensionFeatures;
 //import cz.habarta.typescript.generator.parser.JaxrsApplicationParser;
 import cz.habarta.typescript.generator.parser.RestApplicationParser;
 import cz.habarta.typescript.generator.util.Pair;
@@ -46,7 +46,7 @@ public class Settings {
     public boolean mapPackagesToNamespaces = false;
     public String umdNamespace = null;
     public List<ModuleDependency> moduleDependencies = new ArrayList<>();
-//    private LoadedModuleDependencies loadedModuleDependencies = null;
+    private LoadedModuleDependencies loadedModuleDependencies = null;
     public JsonLibrary jsonLibrary = null;
     public Jackson2ConfigurationResolved jackson2Configuration = null;
     private Predicate<String> excludeFilter = null;
@@ -98,7 +98,7 @@ public class Settings {
     public boolean noTslintDisable = false;
     public boolean noEslintDisable = false;
     public List<File> javadocXmlFiles = null;
-//    public List<EmitterExtension> extensions = new ArrayList<>();
+    public List<EmitterExtension> extensions = new ArrayList<>();
     public List<Class<? extends Annotation>> includePropertyAnnotations = new ArrayList<>();
     public List<Class<? extends Annotation>> excludePropertyAnnotations = new ArrayList<>();
     public List<Class<? extends Annotation>> optionalAnnotations = new ArrayList<>();
@@ -198,18 +198,18 @@ public class Settings {
     }
 
     public void loadExtensions(ClassLoader classLoader, List<String> extensions, List<Settings.ConfiguredExtension> extensionsWithConfiguration) {
-//        this.extensions = new ArrayList<>();
-//        this.extensions.addAll(loadInstances(classLoader, extensions, EmitterExtension.class));
-//        if (extensionsWithConfiguration != null) {
-//            for (ConfiguredExtension configuredExtension : extensionsWithConfiguration) {
-//                final EmitterExtension emitterExtension = loadInstance(classLoader, configuredExtension.className, EmitterExtension.class);
-//                if (emitterExtension instanceof Extension) {
-//                    final Extension extension = (Extension) emitterExtension;
-//                    extension.setConfiguration(Utils.mapFromNullable(configuredExtension.configuration));
-//                }
-//                this.extensions.add(emitterExtension);
-//            }
-//        }
+        this.extensions = new ArrayList<>();
+        this.extensions.addAll(loadInstances(classLoader, extensions, EmitterExtension.class));
+        if (extensionsWithConfiguration != null) {
+            for (ConfiguredExtension configuredExtension : extensionsWithConfiguration) {
+                final EmitterExtension emitterExtension = loadInstance(classLoader, configuredExtension.className, EmitterExtension.class);
+                if (emitterExtension instanceof Extension) {
+                    final Extension extension = (Extension) emitterExtension;
+                    extension.setConfiguration(Utils.mapFromNullable(configuredExtension.configuration));
+                }
+                this.extensions.add(emitterExtension);
+            }
+        }
     }
 
     public void loadNonConstEnumAnnotations(ClassLoader classLoader, List<String> stringAnnotations) {
@@ -265,9 +265,9 @@ public class Settings {
         if (outputFileType == TypeScriptFileType.implementationFile && umdNamespace != null) {
             throw new RuntimeException("'umdNamespace' parameter is not applicable to implementation files. " + seeLink());
         }
-//        if (umdNamespace != null && !ModelCompiler.isValidIdentifierName(umdNamespace)) {
-//            throw new RuntimeException("Value of 'umdNamespace' parameter is not valid identifier: " + umdNamespace + ". " + seeLink());
-//        }
+        if (umdNamespace != null && !ModelCompiler.isValidIdentifierName(umdNamespace)) {
+            throw new RuntimeException("Value of 'umdNamespace' parameter is not valid identifier: " + umdNamespace + ". " + seeLink());
+        }
         if (jsonLibrary == null) {
             throw new RuntimeException("Required 'jsonLibrary' parameter is not configured.");
         }
@@ -276,41 +276,41 @@ public class Settings {
         }
         getValidatedCustomTypeMappings();
         getValidatedCustomTypeAliases();
-//        for (EmitterExtension extension : extensions) {
-//            final String extensionName = extension.getClass().getSimpleName();
-//            final DeprecationText deprecation = extension.getClass().getAnnotation(DeprecationText.class);
-//            if (deprecation != null) {
-//                TypeScriptGenerator.getLogger().warning(String.format("Extension '%s' is deprecated: %s", extensionName, deprecation.value()));
-//            }
-//            final EmitterExtensionFeatures features = extension.getFeatures();
-//            if (features.generatesRuntimeCode && outputFileType != TypeScriptFileType.implementationFile) {
-//                throw new RuntimeException(String.format("Extension '%s' generates runtime code but 'outputFileType' parameter is not set to 'implementationFile'.", extensionName));
-//            }
-//            if (features.generatesModuleCode && outputKind != TypeScriptOutputKind.module) {
-//                throw new RuntimeException(String.format("Extension '%s' generates code as module but 'outputKind' parameter is not set to 'module'.", extensionName));
-//            }
-//            if (!features.worksWithPackagesMappedToNamespaces && mapPackagesToNamespaces) {
-//                throw new RuntimeException(String.format("Extension '%s' doesn't work with 'mapPackagesToNamespaces' parameter.", extensionName));
-//            }
-//            if (features.generatesJaxrsApplicationClient) {
-//                reportConfigurationChange(extensionName, "generateJaxrsApplicationClient", "true");
-//                generateJaxrsApplicationClient = true;
-//            }
-//            if (features.restResponseType != null) {
-//                reportConfigurationChange(extensionName, "restResponseType", features.restResponseType);
-//                restResponseType = features.restResponseType;
-//            }
-//            if (features.restOptionsType != null) {
-//                reportConfigurationChange(extensionName, "restOptionsType", features.restOptionsType);
-//                setRestOptionsType(features.restOptionsType);
-//            }
-//            if (features.npmPackageDependencies != null) {
-//                npmPackageDependencies.putAll(features.npmPackageDependencies);
-//            }
-//            if (features.overridesStringEnums) {
-//                defaultStringEnumsOverriddenByExtension = true;
-//            }
-//        }
+        for (EmitterExtension extension : extensions) {
+            final String extensionName = extension.getClass().getSimpleName();
+            final DeprecationText deprecation = extension.getClass().getAnnotation(DeprecationText.class);
+            if (deprecation != null) {
+                TypeScriptGenerator.getLogger().warning(String.format("Extension '%s' is deprecated: %s", extensionName, deprecation.value()));
+            }
+            final EmitterExtensionFeatures features = extension.getFeatures();
+            if (features.generatesRuntimeCode && outputFileType != TypeScriptFileType.implementationFile) {
+                throw new RuntimeException(String.format("Extension '%s' generates runtime code but 'outputFileType' parameter is not set to 'implementationFile'.", extensionName));
+            }
+            if (features.generatesModuleCode && outputKind != TypeScriptOutputKind.module) {
+                throw new RuntimeException(String.format("Extension '%s' generates code as module but 'outputKind' parameter is not set to 'module'.", extensionName));
+            }
+            if (!features.worksWithPackagesMappedToNamespaces && mapPackagesToNamespaces) {
+                throw new RuntimeException(String.format("Extension '%s' doesn't work with 'mapPackagesToNamespaces' parameter.", extensionName));
+            }
+            if (features.generatesJaxrsApplicationClient) {
+                reportConfigurationChange(extensionName, "generateJaxrsApplicationClient", "true");
+                generateJaxrsApplicationClient = true;
+            }
+            if (features.restResponseType != null) {
+                reportConfigurationChange(extensionName, "restResponseType", features.restResponseType);
+                restResponseType = features.restResponseType;
+            }
+            if (features.restOptionsType != null) {
+                reportConfigurationChange(extensionName, "restOptionsType", features.restOptionsType);
+                setRestOptionsType(features.restOptionsType);
+            }
+            if (features.npmPackageDependencies != null) {
+                npmPackageDependencies.putAll(features.npmPackageDependencies);
+            }
+            if (features.overridesStringEnums) {
+                defaultStringEnumsOverriddenByExtension = true;
+            }
+        }
         if ((nonConstEnums || !nonConstEnumAnnotations.isEmpty()) && outputFileType != TypeScriptFileType.implementationFile) {
             throw new RuntimeException("Non-const enums can only be used in implementation files but 'outputFileType' parameter is not set to 'implementationFile'.");
         }
@@ -375,7 +375,7 @@ public class Settings {
         if (npmBuildScript != null && outputFileType != TypeScriptFileType.implementationFile) {
             throw new RuntimeException("'npmBuildScript' can only be used when generating implementation file ('outputFileType' parameter is 'implementationFile').");
         }
-//        getModuleDependencies();
+        getModuleDependencies();
 
         if (declarePropertiesAsOptional) {
             TypeScriptGenerator.getLogger().warning("Parameter 'declarePropertiesAsOptional' is deprecated. Use 'optionalProperties' parameter.");
@@ -434,9 +434,9 @@ public class Settings {
                 final String tsDefinition = entry.getValue();
                 try {
                     final GenericName genericTsName = parseGenericName(tsName);
-//                    if (!ModelCompiler.isValidIdentifierName(genericTsName.rawName)) {
-//                        throw new RuntimeException(String.format("Invalid identifier: '%s'", genericTsName.rawName));
-//                    }
+                    if (!ModelCompiler.isValidIdentifierName(genericTsName.rawName)) {
+                        throw new RuntimeException(String.format("Invalid identifier: '%s'", genericTsName.rawName));
+                    }
                     validateTypeParameters(genericTsName.typeParameters);
                     validatedCustomTypeAliases.add(new CustomTypeAlias(genericTsName, tsDefinition));
                 } catch (Exception e) {
@@ -470,9 +470,9 @@ public class Settings {
             return;
         }
         for (String typeParameter : typeParameters) {
-//            if (!ModelCompiler.isValidIdentifierName(typeParameter)) {
-//                throw new RuntimeException(String.format("Invalid generic type parameter: '%s'", typeParameter));
-//            }
+            if (!ModelCompiler.isValidIdentifierName(typeParameter)) {
+                throw new RuntimeException(String.format("Invalid generic type parameter: '%s'", typeParameter));
+            }
         }
     }
 
@@ -497,12 +497,12 @@ public class Settings {
         return "1.0.0";
     }
 
-//    public LoadedModuleDependencies getModuleDependencies() {
-//        if (loadedModuleDependencies == null) {
-//            loadedModuleDependencies = new LoadedModuleDependencies(this, moduleDependencies);
-//        }
-//        return loadedModuleDependencies;
-//    }
+    public LoadedModuleDependencies getModuleDependencies() {
+        if (loadedModuleDependencies == null) {
+            loadedModuleDependencies = new LoadedModuleDependencies(this, moduleDependencies);
+        }
+        return loadedModuleDependencies;
+    }
 
     public Predicate<String> getExcludeFilter() {
         if (excludeFilter == null) {

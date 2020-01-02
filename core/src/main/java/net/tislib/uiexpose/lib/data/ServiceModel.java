@@ -4,9 +4,9 @@ import java.util.Set;
 import lombok.Data;
 
 @Data
-public class ServiceInfo {
+public class ServiceModel {
     private String name;
     private String group;
 
-    private Set<MethodInfo> methods;
+    private Set<MethodModel> methods;
 }
