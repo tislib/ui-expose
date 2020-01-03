@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { UiExposeBackend } from '@tislib/ui-expose-angular-lib';
-
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { UiExposeBackend } from "@tislib/ui-expose-angular-lib";
+import { Person } from "../model/person.model";
 @Injectable()
 
 export class TestService1 {
@@ -21,12 +21,12 @@ export class TestService1 {
         });
     }
 
-    test2(param3: string, param1: string, param2: string): Observable<string> {
+    createDummyPerson(name: string, surname: string): Observable<Person> {
         return this.backend.invoke({
             serviceName: TestService1.SERVICE_NAME,
-            methodName: 'test2',
-            arguments: [{ value: param3, type: 'string' }, { value: param1, type: 'string' }, { value: param2, type: 'string' }],
-            returnType: 'string'
+            methodName: 'createDummyPerson',
+            arguments: [{ value: name, type: 'string' }, { value: surname, type: 'string' }],
+            returnType: '#Person'
         });
     }
 }

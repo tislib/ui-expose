@@ -15,7 +15,12 @@ export class AppComponent {
   test1() {
     this.testService1.test1('aaa', 'bbb')
       .subscribe(resp => {
-        alert(resp);
+        console.log(resp);
+      });
+
+    this.testService1.createDummyPerson('surname-1', 'test-name-1')
+      .subscribe(resp => {
+        console.log(resp);
       })
   }
 }

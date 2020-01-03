@@ -1,11 +1,14 @@
 package net.tislib.uiexpose.lib;
 
 import java.util.Set;
-import net.tislib.uiexpose.lib.data.ServiceInfo;
+import net.tislib.uiexpose.lib.data.Model;
 import net.tislib.uiexpose.lib.exporer.BuildPathServiceExplorer;
+import net.tislib.uiexpose.lib.processor.BeanProcessor;
+import net.tislib.uiexpose.lib.processor.Jackson2Configuration;
+import net.tislib.uiexpose.lib.processor.JacksonBeanProcessor;
 import net.tislib.uiexpose.lib.processor.ServiceProcessor;
 import net.tislib.uiexpose.lib.processor.ServiceProcessorImpl;
-import net.tislib.uiexpose.lib.publisher.OutputPublisher;
+import net.tislib.uiexpose.lib.publisher.ModelPublisher;
 
 public class Main {
 
@@ -15,12 +18,14 @@ public class Main {
         serviceExplorer.loadExposedServices();
         Set<Class<?>> exposedServices = serviceExplorer.getExposedServices();
 
-        ServiceProcessor serviceProcessor = new ServiceProcessorImpl();
+        BeanProcessor beanProcessor = new JacksonBeanProcessor(new Jackson2Configuration());
 
-        Set<ServiceInfo> serviceInfoList = serviceProcessor.process(exposedServices);
+        ServiceProcessor serviceProcessor = new ServiceProcessorImpl(beanProcessor);
 
-        OutputPublisher outputPublisher = new OutputPublisher();
-        outputPublisher.publish(serviceInfoList, System.out);
+        Model model = serviceProcessor.process(exposedServices);
+
+        ModelPublisher outputPublisher = new ModelPublisher();
+        outputPublisher.publish(model, System.out);
     }
 
 }
