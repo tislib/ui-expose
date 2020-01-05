@@ -7,12 +7,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
-import net.tislib.uiexpose.lib.data.Type;
+import net.tislib.uiexpose.lib.data.UIExposeType;
 
-public class TypeDeserializer extends JsonDeserializer<Type<?>> {
+public class TypeDeserializer extends JsonDeserializer<UIExposeType<?>> {
 
     @Override
-    public Type<?> deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public UIExposeType<?> deserialize(JsonParser jsonParser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         ObjectCodec oc = jsonParser.getCodec();
         JsonNode node = oc.readTree(jsonParser);
         return SerializationUtil.deserializeType(node);

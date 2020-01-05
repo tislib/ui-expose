@@ -1,3 +1,9 @@
 rootProject.name = 'UI-Expose'
 include 'spring-lib'
 include 'core'
+include 'testing'
+include 'testing:spring-angular-testing'
+findProject(':testing:spring-angular-testing')?.name = 'spring-angular-testing'
+include 'examples'
+findProject(':examples')?.name = 'example-typescript-gen'
+

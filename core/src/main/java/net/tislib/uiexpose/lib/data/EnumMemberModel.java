@@ -1,0 +1,46 @@
+
+package net.tislib.uiexpose.lib.data;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
+
+
+public class EnumMemberModel {
+
+    private final String propertyName;
+    private final Object/*String|Number*/ enumValue;
+
+    @JsonIgnore
+    private final List<String> comments;
+
+    public EnumMemberModel(String propertyName, String enumValue, List<String> comments) {
+        this(propertyName, (Object) enumValue, comments);
+    }
+
+    public EnumMemberModel(String propertyName, Number enumValue, List<String> comments) {
+        this(propertyName, (Object) enumValue, comments);
+    }
+
+    private EnumMemberModel(String propertyName, Object enumValue, List<String> comments) {
+        this.propertyName = propertyName;
+        this.enumValue = enumValue;
+        this.comments = comments;
+    }
+
+    public String getPropertyName() {
+        return propertyName;
+    }
+
+    public Object getEnumValue() {
+        return enumValue;
+    }
+
+    public List<String> getComments() {
+        return comments;
+    }
+
+    public EnumMemberModel withComments(List<String> comments) {
+        return new EnumMemberModel(propertyName, enumValue, comments);
+    }
+
+}

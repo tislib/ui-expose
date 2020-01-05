@@ -23,11 +23,13 @@ public class TestService1CoreLibScannerTest {
     @Test
     public void serviceInfoValidation() throws Exception {
         mockMvc.perform(get("/api/api-descriptions"))
-                .andExpect(jsonPath("$[0].name", is("TestService1")))
-                .andExpect(jsonPath("$[0].group", is("test")))
-                .andExpect(jsonPath("$[0].methods[0].name", is("test1")))
-                .andExpect(jsonPath("$[0].methods[0].returnType", is("string")))
-                .andExpect(jsonPath("$[0].methods[0].arguments.param1", is("string")))
-                .andExpect(jsonPath("$[0].methods[0].arguments.param2", is("string")));
+                .andExpect(jsonPath("$.services[0].name", is("TestService1")))
+                .andExpect(jsonPath("$.services[0].group", is("test")))
+                .andExpect(jsonPath("$.services[0].methods[0].name", is("test1")))
+                .andExpect(jsonPath("$.services[0].methods[0].returnType", is("string")))
+                .andExpect(jsonPath("$.services[0].methods[0].arguments[0].name", is("param1")))
+                .andExpect(jsonPath("$.services[0].methods[0].arguments[1].name", is("param2")))
+                .andExpect(jsonPath("$.services[0].methods[0].arguments[0].type", is("string")))
+                .andExpect(jsonPath("$.services[0].methods[0].arguments[1].type", is("string")));
     }
 }

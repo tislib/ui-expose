@@ -1,7 +1,7 @@
 import download from 'mvn-artifact-download';
 import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, flatMap } from 'rxjs/operators';
-import { ServiceInfo } from './data/service-info';
+import { Model } from './data/model';
 
 const fs = require('fs');
 
@@ -12,9 +12,9 @@ export class CoreLibHelper {
     private static CORE_LIB_JAR: string = 'core.jar';
     private static CORE_LIB_PATH: string = require('path').dirname(require.main?.filename);
     
-    runScanner(buildPath: string): Observable<ServiceInfo[]> {
+    runScanner(buildPath: string): Observable<Model> {
         const coreLibPath$ = this.getCoreLib();
-        return coreLibPath$.pipe(flatMap(coreLibPath => new Observable<ServiceInfo[]>(observer => {
+        return coreLibPath$.pipe(flatMap(coreLibPath => new Observable<Model>(observer => {
             exec(`java -jar ${CoreLibHelper.CORE_LIB_PATH}/${coreLibPath} ${buildPath}`, (err: object, stdout: string) => {
                 if (err) {
                     observer.error(err);

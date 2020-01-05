@@ -7,8 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import net.tislib.uiexpose.lib.data.ServiceInfo;
-import net.tislib.uiexpose.lib.publisher.OutputPublisher;
+import net.tislib.uiexpose.lib.data.Model;
+import net.tislib.uiexpose.lib.data.ServiceModel;
+import net.tislib.uiexpose.lib.publisher.ModelPublisher;
 import net.tislib.uiexpose.lib.serializer.JacksonSerializeModule;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,8 +47,8 @@ public class UIExposeRestController {
     @RequestMapping("/api-descriptions")
     @SneakyThrows
     public void getApiDescriptions(HttpServletResponse response) {
-        Set<ServiceInfo> res = service.getApiDescriptions();
-        OutputPublisher outputPublisher = new OutputPublisher();
+        Model res = service.getApiDescriptions();
+        ModelPublisher outputPublisher = new ModelPublisher();
         outputPublisher.publish(res, new PrintStream(response.getOutputStream()));
     }
 

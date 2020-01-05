@@ -11,4 +11,12 @@ public class TestService1 {
         return param1 + param2;
     }
 
+    public Person createDummyPerson(String name, String surname) {
+        Person person = new Person();
+        person.setName(name);
+        person.setSurname(surname);
+        person.setProduct(new PersonProduct());
+        person.getProduct().setPName(name + name);
+        return person;
+    }
 }

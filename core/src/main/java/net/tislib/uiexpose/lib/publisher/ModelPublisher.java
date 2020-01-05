@@ -2,20 +2,19 @@ package net.tislib.uiexpose.lib.publisher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.PrintStream;
-import java.util.Set;
 import lombok.SneakyThrows;
-import net.tislib.uiexpose.lib.data.ServiceInfo;
+import net.tislib.uiexpose.lib.data.Model;
 import net.tislib.uiexpose.lib.serializer.JacksonSerializeModule;
 
-public class OutputPublisher {
+public class ModelPublisher {
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public OutputPublisher() {
+    public ModelPublisher() {
         objectMapper.registerModule(new JacksonSerializeModule());
     }
 
     @SneakyThrows
-    public void publish(Set<ServiceInfo> serviceInfoList, PrintStream out) {
-        objectMapper.writeValue(out, serviceInfoList);
+    public void publish(Model model, PrintStream out) {
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(out, model);
     }
 }
